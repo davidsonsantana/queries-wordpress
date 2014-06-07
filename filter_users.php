@@ -20,3 +20,5 @@ function mypo_parse_query_useronly( $wp_query ) {
 add_filter('parse_query', 'mypo_parse_query_useronly' );
 
 ?>
+
+<!-- http://premium.wpmudev.org/blog/how-to-limit-the-wordpres-posts-screen-to-only-show-authors-their-own-posts/ -->
