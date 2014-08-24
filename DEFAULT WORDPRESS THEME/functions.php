@@ -510,3 +510,66 @@ require get_template_directory() . '/inc/customizer.php';
 if ( ! class_exists( 'Featured_Content' ) && 'plugins.php' !== $GLOBALS['pagenow'] ) {
 	require get_template_directory() . '/inc/featured-content.php';
 }
+
+
+
+/* Remove Unwanted Admin Menu Items */
+
+function remove_admin_menu_items() {
+	$remove_menu_items = array(__('Links'), __('Comments'), __('Media'), __('Tools'));
+	global $menu;
+	end ($menu);
+	while (prev($menu)){
+		$item = explode(' ',$menu[key($menu)][0]);
+		if(in_array($item[0] != NULL?$item[0]:"" , $remove_menu_items)){
+		unset($menu[key($menu)]);}
+	}
+}
+
+add_action('admin_menu', 'remove_admin_menu_items');
+
+
+
+/** Change the post menu to article and remove the Tags menu */
+function change_post_menu_text() {
+  global $menu;
+  global $submenu;
+
+  // Change menu item
+  $menu[5][0] = 'Conteúdos';
+
+  // Change post submenu
+  $submenu['edit.php'][5][0] = 'Listar conteúdos';
+  $submenu['edit.php'][10][0] = 'Adicionar novo conteúdo';
+  // $submenu['edit.php'][15][0] = 'Tipo de negociação'; // Rename Categorias to Any other name
+  
+  remove_submenu_page('edit.php','edit-tags.php?taxonomy=post_tag');
+
+}
+
+add_action( 'admin_menu', 'change_post_menu_text' );
+
+
+
+
+/* Change the post type labels */
+function change_post_type_labels() {
+  global $wp_post_types;
+
+  // Get the post labels
+  $postLabels = $wp_post_types['post']->labels;
+  $postLabels->name = 'Conteúdos';
+  $postLabels->singular_name = 'Conteúdo';
+  $postLabels->add_new = 'Adicionar conteúdo';
+  $postLabels->add_new_item = 'Adicionar novo conteúdo';
+  $postLabels->edit_item = 'Editar';
+  $postLabels->new_item = 'Conteúdos';
+  $postLabels->view_item = 'Visualizar conteúdo';
+  $postLabels->search_items = 'Buscar conteúdos';
+  $postLabels->not_found = 'Nenhum conteúdo encontrado';
+  $postLabels->not_found_in_trash = 'Nenhum conteúdo encontrado na lixeira';
+}
+add_action( 'init', 'change_post_type_labels' );
+
+
+
